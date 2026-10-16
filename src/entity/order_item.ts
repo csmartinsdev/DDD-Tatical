@@ -12,7 +12,7 @@ export class OrderItem {
         this._price = price;
         this._productId = productId;
         this._quantity = quantity;
-        this._total = this.total()
+        this._total = price * quantity;
     }
 
     get id(): string {
