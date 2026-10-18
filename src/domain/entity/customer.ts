@@ -7,6 +7,14 @@ export class Customer {
     private _active: boolean = true;
     private _rewardPoints: number = 0;
 
+    get Address(): Address {
+        return this._address;
+    }
+
+    set Address(address: Address) {
+        this._address = address;
+    }
+
     constructor(id: string, name: string) {
         this._id = id;
         this._name = name;
@@ -17,12 +25,16 @@ export class Customer {
         return this._id;
     }
 
+    get name(): string {
+        return this._name;
+    }
+
     get rewardPoints(): number {
         return this._rewardPoints;
     }
     
-    set Address(address: Address) {
-        this._address = address;
+     isActive(): boolean {
+        return this._active;
     }
 
     validate(): void {
@@ -39,6 +51,10 @@ export class Customer {
     changeName(name: string): void {
         this._name = name;
         this.validate();
+    }
+
+    changeAddress(address: Address): void {
+        this._address = address;
     }
 
     activate(): void {

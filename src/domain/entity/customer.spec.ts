@@ -28,7 +28,7 @@ describe("Customer unit tests", () => {
 
         expect(() => customer.activate()).toThrow("Address is required to activate a customer");
 
-        customer.Address = new Address("Main Street", "10", "London", "SW1A 1AA");
+        customer.changeAddress(new Address("Main Street", "10", "London", "SW1A 1AA"));
         expect(() => customer.activate()).not.toThrow();
     })
 
