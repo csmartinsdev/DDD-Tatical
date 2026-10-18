@@ -137,4 +137,52 @@ describe("Order repository tests", () => {
             ]
         });
     })
+
+    it("should find an order", async () => {
+        const customerRepository = new CustomerRepository();
+        const customer = new Customer("123", "Customer 1");
+        const address = new Address("Street 1", "1", "Zipcode 1", "City 1");
+        customer.changeAddress(address);
+        await customerRepository.create(customer);
+
+        const productRepository = new ProductRepository();
+        const product = new Product("123", "Product 1", 10);
+        await productRepository.create(product);
+
+        const item = new OrderItem("1", product.name, product.price, product.id, 2);
+        const orderRepository = new OrderRepository();
+        const order = new Order("123", "123", [item]);
+        await orderRepository.create(order);
+
+        const foundOrder = await orderRepository.find(order.id);
+
+        expect(foundOrder).toStrictEqual(order);
+    })
+
+    it("should find all orders", async () => {
+        const customerRepository = new CustomerRepository();
+        const customer = new Customer("123", "Customer 1");
+        const address = new Address("Street 1", "1", "Zipcode 1", "City 1");
+        customer.changeAddress(address);
+        await customerRepository.create(customer);
+
+        const productRepository = new ProductRepository();
+        const product = new Product("123", "Product 1", 10);
+        await productRepository.create(product);
+
+        const item = new OrderItem("1", product.name, product.price, product.id, 2);
+        const orderRepository = new OrderRepository();
+        const order = new Order("123", "123", [item]);
+        await orderRepository.create(order);
+
+        const item2 = new OrderItem("2", product.name, product.price, product.id, 3);
+        const order2 = new Order("124", "123", [item2]);
+        await orderRepository.create(order2);
+
+        const orders = await orderRepository.findAll();
+
+        expect(orders).toHaveLength(2);
+        expect(orders).toContainEqual(order);
+        expect(orders).toContainEqual(order2);
+    })
 })
