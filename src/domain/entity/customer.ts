@@ -6,7 +6,14 @@ export class Customer {
     private _address!: Address;
     private _active: boolean = true;
     private _rewardPoints: number = 0;
-    Address: any;
+
+    get Address(): Address {
+        return this._address;
+    }
+
+    set Address(address: Address) {
+        this._address = address;
+    }
 
     constructor(id: string, name: string) {
         this._id = id;
