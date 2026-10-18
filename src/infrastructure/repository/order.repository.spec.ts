@@ -69,4 +69,72 @@ describe("Order repository tests", () => {
         });
 
     })
+
+    it("should update an order", async () => {
+        const customerRepository = new CustomerRepository();
+        const customer = new Customer("123", "Customer 1");
+        const address = new Address("Street 1", "1", "Zipcode 1", "City 1");
+        customer.changeAddress(address);
+        await customerRepository.create(customer);
+
+        const productRepository = new ProductRepository();
+        const product = new Product("123", "Product 1", 10);
+        await productRepository.create(product);
+
+        const item = new OrderItem("1", product.name, product.price, product.id, 2);
+        const orderRepository = new OrderRepository();
+        const order = new Order("123", "123", [item]);
+        await orderRepository.create(order);
+
+        const orderModel = await OrderModel.findOne({ where: { id: order.id }, include: ["items"] });
+        
+        expect(orderModel.toJSON()).toStrictEqual({
+            id: order.id,
+            customerId: order.customerId,
+            total: order.total(),
+            items: [
+                {
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    orderId: order.id,
+                    productId: product.id,
+                    total: item.total()
+                }
+            ]
+        });
+
+        const newItem = new OrderItem("2", product.name, product.price, product.id, 3);
+        order.items.push(newItem);
+        await orderRepository.update(order);
+
+        const updatedOrderModel = await OrderModel.findOne({ where: { id: order.id }, include: ["items"] });
+        
+        expect(updatedOrderModel.toJSON()).toStrictEqual({
+            id: order.id,
+            customerId: order.customerId,
+            total: order.total(),
+            items: [
+                {
+                    id: item.id,
+                    name: item.name,
+                    price: item.price,
+                    quantity: item.quantity,
+                    orderId: order.id,
+                    productId: product.id,
+                    total: item.total()
+                },
+                {
+                    id: newItem.id,
+                    name: newItem.name,
+                    price: newItem.price,
+                    quantity: newItem.quantity,
+                    orderId: order.id,
+                    productId: product.id,
+                    total: newItem.total()
+                }
+            ]
+        });
+    })
 })
